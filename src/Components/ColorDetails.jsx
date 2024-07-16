@@ -7,12 +7,26 @@ function ColorDetails() {
   const [color, setColor] = useState({ name: "" });
   const [background, setBackground] = useState("");
   let navigate = useNavigate();
-  let { index } = useParams();
+  let { id } = useParams();
 
   // On page load, load color details
+  useEffect(() => {
+    fetch(`${API}/colors/${id}`)
+      .then(res => res.json())
+      .then(res => setColor(res))
+      .catch(err => console.log(err))
+}, [])
 
   // Be able to delete a color. Return to index view.
-  const handleDelete = () => {};
+  const handleDelete = () => {
+    fetch(`${API}/colors/${id}`, {
+      method: "DELETE"
+    })
+      .then(res => res.json())
+      .then(navigate('/colors'))
+      .catch(err => console.log(err))
+  };
+
   useEffect(() => {
     const { name } = color;
     setBackground(CSS.supports("color", name.toLowerCase()));
@@ -24,7 +38,7 @@ function ColorDetails() {
       className={!background ? "no-such-color" : null}
     >
       <h3>
-        {color.isFavorite ? <span>⭐️</span> : null}
+        {color.is_favorite ? <span>⭐️</span> : null}
         <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
         {color.name}
       </h3>
@@ -38,7 +52,7 @@ function ColorDetails() {
         </div>
         <div>
           {" "}
-          <Link to={`/colors/${index}/edit`}>
+          <Link to={`/colors/${id}/edit`}>
             <button>Edit</button>
           </Link>
         </div>

@@ -7,18 +7,28 @@ function ColorNewForm() {
   const navigate = useNavigate();
   const [color, setColor] = useState({
     name: "",
-    isFavorite: false,
+    is_favorite: false,
   });
 
   // Add a color. Redirect to the index view.
-  const addColor = () => {};
+  const addColor = () => {
+    fetch(`${API}/colors`, {
+      method: "POST",
+      body: JSON.stringify(color),
+      headers: {
+        "Content-Type": "application/json"
+      }})
+          .then(res => res.json())
+          .then(navigate('/colors'))
+          .catch(err => console.log(err))
+  };
 
   const handleTextChange = (event) => {
     setColor({ ...color, [event.target.id]: event.target.value });
   };
 
   const handleCheckboxChange = () => {
-    setColor({ ...color, isFavorite: !color.isFavorite });
+    setColor({ ...color, is_favorite: !color.is_favorite });
   };
 
   const handleSubmit = (event) => {
@@ -39,12 +49,12 @@ function ColorNewForm() {
           required
         />
 
-        <label htmlFor="isFavorite">Favorite:</label>
+        <label htmlFor="is_favorite">Favorite:</label>
         <input
-          id="isFavorite"
+          id="is_favorite"
           type="checkbox"
           onChange={handleCheckboxChange}
-          checked={color.isFavorite}
+          checked={color.is_favorite}
         />
         <br />
         <br />

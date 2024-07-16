@@ -1,17 +1,17 @@
 import { Link } from "react-router-dom";
 
-function Color({ color, index }) {
+function Color({ color, id }) {
   return (
     <tr>
       <td>
-        {color.isFavorite ? (
+        {color.is_favorite ? (
           <span>⭐️</span>
         ) : (
-          <span>&nbsp; &nbsp; &nbsp;</span>
+          <span>no</span>
         )}
       </td>
       <td>
-        <Link to={`/colors/${index}`}> {color.name}</Link>
+        <Link to={`/colors/${id}`}> {color.name}</Link>
       </td>
       <td>
         {" "}

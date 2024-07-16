@@ -4,12 +4,12 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 const API = import.meta.env.VITE_API_URL;
 
 function ColorEditForm() {
-  let { index } = useParams();
+  let { id } = useParams();
   const navigate = useNavigate();
 
   const [color, setColor] = useState({
     name: "",
-    isFavorite: false,
+    is_favorite: false,
   });
 
   const handleTextChange = (event) => {
@@ -17,18 +17,36 @@ function ColorEditForm() {
   };
 
   const handleCheckboxChange = () => {
-    setColor({ ...color, isFavorite: !color.isFavorite });
+    setColor({ ...color, is_favorite: !color.is_favorite });
   };
 
   // Update a color. Redirect to show view
-  const updateColor = () => {};
+  const updateColor = () => {
+    fetch(`${API}/colors/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(color),
+      headers: {
+        "Content-type": "application/json"
+      }
+    })
+      .then(res => res.json())
+      .then(navigate(`/colors/${id}`))
+      .catch(err => console.log(err))
+  };
 
-  // On page load, fill in the form with the color data.
-
-  const handleSubmit = (event) => {
+const handleSubmit = (event) => {
     event.preventDefault();
     updateColor();
   };
+
+   // On page load, fill in the form with the color data.
+
+   useEffect(() => {
+    fetch(`${API}/colors/${id}`)
+      .then(res => res.json())
+      .then(res => setColor(res))
+      .catch(err => console.log(err))
+   }, [])
 
   return (
     <div className="Edit">
@@ -43,19 +61,19 @@ function ColorEditForm() {
           required
         />
 
-        <label htmlFor="isFavorite">Favorite:</label>
+        <label htmlFor="is_favorite">Favorite:</label>
         <input
-          id="isFavorite"
+          id="is_favorite"
           type="checkbox"
           onChange={handleCheckboxChange}
-          checked={color.isFavorite}
+          checked={color.is_favorite}
         />
         <br />
         <br />
         <button type="submit">Submit</button>
       </form>
       <br />
-      <Link to={`/colors/${index}`}>
+      <Link to={`/colors/${id}`}>
         <button>Nevermind!</button>
       </Link>
     </div>
